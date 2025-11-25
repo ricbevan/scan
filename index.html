@@ -1,36 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Return to Shortcut</title>
-<style>
+  <meta charset="UTF-8" />
+  <title>QR Scanner (Live Camera)</title>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+  <style>
     body {
-        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-        text-align: center;
-        padding-top: 100px;
+      font-family: sans-serif;
+      padding: 10px;
+      text-align: center;
     }
-    button {
-        font-size: 20px;
-        padding: 12px 24px;
-        border: none;
-        border-radius: 10px;
-        background: #007aff;
-        color: white;
-        cursor: pointer;
+    video {
+      width: 100%;
+      max-width: 400px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
     }
-    button:active {
-        background: #0051a8;
+    #result {
+      margin-top: 15px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      word-break: break-all;
     }
-</style>
+  </style>
 </head>
 <body>
 
-<h1>Finish Step</h1>
-<p>Tap the button below to return to the Shortcut.</p>
+<h2>Scan QR Code</h2>
+<video id="video" autoplay playsinline></video>
+<div id="result">Result will appear here</div>
 
-<a href="shortcuts://x-callback-url/run-shortcut?name=QRLoop&input=done">
-    <button>Return to Shortcut</button>
-</a>
+<script>
+const video = document.getElementById('video');
+const resultDiv = document.getElementById('result');
+
+// Create a hidden canvas to capture video frames
+const canvas = document.createElement('canvas');
+const ctx = canvas.getContext('2d');
+
+async function startCamera() {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'environment' }
+        });
+        video.srcObject = stream;
+        requestAnimationFrame(scanFrame);
+    } catch (err) {
+        resultDiv.textContent = "Camera access denied or not supported: " + err;
+    }
+}
+
+function scanFrame() {
+    if (video.readyState === video.HAVE_ENOUGH_DATA) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const code = jsQR(imageData.data, imageData.width, imageData.height);
+        if (code) {
+            resultDiv.textContent = "QR Code: " + code.data;
+        }
+    }
+    requestAnimationFrame(scanFrame);
+}
+
+startCamera();
+</script>
 
 </body>
 </html>
