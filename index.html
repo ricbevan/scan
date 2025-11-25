@@ -4,23 +4,23 @@
 <meta charset="UTF-8">
 <title>Return to Shortcut</title>
 <style>
-	body {
-		font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-		text-align: center;
-		padding-top: 100px;
-	}
-	button {
-		font-size: 20px;
-		padding: 12px 24px;
-		border: none;
-		border-radius: 10px;
-		background: #007aff;
-		color: white;
-		cursor: pointer;
-	}
-	button:active {
-		background: #0051a8;
-	}
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        text-align: center;
+        padding-top: 100px;
+    }
+    button {
+        font-size: 20px;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 10px;
+        background: #007aff;
+        color: white;
+        cursor: pointer;
+    }
+    button:active {
+        background: #0051a8;
+    }
 </style>
 </head>
 <body>
@@ -28,13 +28,9 @@
 <h1>Finish Step</h1>
 <p>Tap the button below to return to the Shortcut.</p>
 
-<button onclick="triggerShortcut()">Return to Shortcut</button>
-
-<script>
-function triggerShortcut() {
-	window.location = "shortcuts://x-callback-url/run-shortcut?name=QRLoop&input=done";
-}
-</script>
+<a href="shortcuts://x-callback-url/run-shortcut?name=QRLoop&input=done">
+    <button>Return to Shortcut</button>
+</a>
 
 </body>
 </html>
