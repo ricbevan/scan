@@ -1,0 +1,21 @@
+<input type="text" id="code" inputmode="text">
+<button onclick="scan()">Scan Code</button>
+
+<script>
+	
+	async function scan() {
+	  const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" }});
+	  const track = stream.getVideoTracks()[0];
+	  const imageCapture = new ImageCapture(track);
+	
+	  const bitmap = await imageCapture.grabFrame();
+	  const barcodes = await new BarcodeDetector({ formats: ["qr_code", "code_128"] }).detect(bitmap);
+	
+	  if (barcodes.length > 0) {
+		document.getElementById("code").value = barcodes[0].rawValue;
+	  }
+	
+	  track.stop();
+	}
+	
+</script>
